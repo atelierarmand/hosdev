@@ -1,0 +1,99 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+// Generate a path for each project
+export async function getStaticPaths() {
+  const projectEntries = await getCollection('projects');
+  const allPosts = await getCollection('blog');
+  const blogSlugs = new Set(allPosts.map(post => post.slug));
+  
+  return projectEntries.map(project => {
+    // Make sure we're not overriding any blog post slugs
+    if (blogSlugs.has(project.data.slug)) {
+      console.warn(`Warning: Project slug '${project.data.slug}' conflicts with a blog post slug.`);
+    }
+    
+    // Find all posts associated with this project
+    const projectPosts = allPosts.filter(post => post.data.project === project.data.slug)
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+      
+    return {
+      params: { project: project.data.slug },
+      props: { project: project.data, posts: projectPosts },
+    };
+  });
+}
+
+const { project, posts } = Astro.props;
+---
+
+<MainLayout title={`${project.name} | Hospitality.dev`}>
+  <main>
+    <h1>{project.name}</h1>
+    <p class="project-description">{project.description}</p>
+    
+    {posts.length > 0 ? (
+      <div class="project-posts">
+        <h2>Posts</h2>
+        <ul class="blog-posts">
+          {posts.map((post) => {
+            const formattedDate = new Date(post.data.pubDate).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            });
+            
+            return (
+              <li>
+                <a href={`/${post.slug}`}>
+                  <span>{post.data.title}</span>
+                  <time datetime={post.data.pubDate.toString()}>{formattedDate}</time>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ) : (
+      <p class="no-posts">No articles available for this project yet.</p>
+    )}
+  </main>
+</MainLayout>
+
+<style>
+  main {
+    margin: calc(1.75 * var(--space-md)) 0;
+  }
+  
+  h1 {
+    font-weight: 550;
+    letter-spacing: -.5px;
+    background: linear-gradient(to bottom, var(--text-color), var(--sub-color));
+    -webkit-background-clip: text;
+    color: var(--tx-clip);
+    text-shadow: var(--tx-shadow);
+    margin-bottom: var(--space-sm);
+  }
+  
+  .project-description {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: var(--space-lg);
+    line-height: 1.6;
+  }
+  
+  h2 {
+    font-size: 1.2rem;
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+    color: var(--sub-color);
+    text-transform: uppercase;
+  }
+  
+  .no-posts {
+    font-style: italic;
+    color: var(--sub-color);
+    margin-top: var(--space-lg);
+  }
+</style>

@@ -1,96 +1,91 @@
 ---
+// BlogPostLayout.astro
 import MainLayout from './MainLayout.astro';
 
-const { frontmatter } = Astro.props;
+interface Props {
+  frontmatter: {
+    title: string;
+    description?: string;
+    pubDate: string | Date;
+    updatedDate?: string | Date;
+    heroImage?: string;
+  };
+}
 
-const formattedDate = new Date(frontmatter.pubDate).toLocaleDateString('en-us', {
+const { frontmatter } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage } = frontmatter;
+
+const formattedPubDate = new Date(pubDate).toLocaleDateString('en-US', {
   year: 'numeric',
-  month: 'long',
+  month: 'short',
   day: 'numeric',
 });
+
+const formattedUpdatedDate = updatedDate 
+  ? new Date(updatedDate).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  : null;
 ---
 
-<MainLayout title={`${frontmatter.title} | HosDev Blog`} description={frontmatter.description}>
-  <article class="blog-post">
-    <header>
-      <p class="publish-date">{formattedDate}</p>
-      <h1>{frontmatter.title}</h1>
-      <p class="description">{frontmatter.description}</p>
-      
-      {frontmatter.tags && (
-        <div class="tags">
-          {frontmatter.tags.map(tag => (
-            <span class="tag">{tag}</span>
-          ))}
-        </div>
-      )}
-    </header>
-    
-    <div class="post-content">
-      <slot />
-    </div>
-    
-    <footer>
-      <p class="author">Written by {frontmatter.author || 'HosDev Team'}</p>
-      
-      <div class="share">
-        <p>Share this post:</p>
-        <div class="share-links">
-          <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(frontmatter.title)}&url=${encodeURIComponent(Astro.url)}`} target="_blank" rel="noopener noreferrer">Twitter</a>
-          <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(Astro.url)}`} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <a href={`mailto:?subject=${encodeURIComponent(frontmatter.title)}&body=${encodeURIComponent(`Check out this article: ${Astro.url}`)}`}>Email</a>
-        </div>
+<MainLayout title={title} description={description}>
+  <main class="single-post">
+    <article>
+      <h1>{title}</h1>
+      <div class="post-time">
+        <time datetime={pubDate.toString()}>{formattedPubDate}</time>
+        {formattedUpdatedDate && (
+          <span class="updated-time">
+            (Updated: {formattedUpdatedDate})
+          </span>
+        )}
       </div>
       
-      <div class="more-posts">
-        <a href="/posts" class="btn btn-outline">View All Posts</a>
+      {heroImage && <img src={heroImage} alt={title} class="hero-image" />}
+      
+      <div class="post-content">
+        <slot />
       </div>
-    </footer>
-  </article>
+      
+      <div class="post-navigation">
+        <a href="/posts" class="page-nav">&larr; Back to all posts</a>
+      </div>
+    </article>
+  </main>
 </MainLayout>
 
 <style>
-  .blog-post {
-    max-width: var(--width);
-    margin: 0 auto;
-    padding: 0 var(--space-sm);
-  }
-  
-  header {
-    margin-bottom: var(--space-lg);
-  }
-  
-  .publish-date {
-    color: var(--sub-color);
-    margin-bottom: var(--space-sm);
-    font-size: 0.9rem;
+  .single-post {
+    /* No layout margin needed */
   }
   
   h1 {
+    font-weight: 550;
+    letter-spacing: -.5px;
+    background: linear-gradient(to bottom, var(--text-color), var(--sub-color));
+    -webkit-background-clip: text;
+    color: var(--tx-clip);
+    text-shadow: var(--tx-shadow);
     margin-bottom: var(--space-sm);
-    font-size: 1.8rem;
-    line-height: 1.3;
   }
   
-  .description {
-    font-size: 1.1rem;
+  .post-time {
+    font-size: 90%;
     color: var(--sub-color);
-    margin-bottom: var(--space-md);
-    line-height: 1.5;
+    margin-bottom: var(--space-lg);
   }
   
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-sm);
-    margin-top: var(--space-md);
+  .updated-time {
+    margin-left: var(--space-sm);
+    font-style: italic;
   }
   
-  .tag {
-    background-color: color-mix(in srgb, var(--text-color) 10%, transparent);
-    padding: 0.3rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
+  .hero-image {
+    margin: var(--space-md) 0;
+    width: 100%;
+    border-radius: 8px;
   }
   
   .post-content {
@@ -98,72 +93,21 @@ const formattedDate = new Date(frontmatter.pubDate).toLocaleDateString('en-us', 
     margin-bottom: var(--space-xl);
   }
   
-  .post-content :global(h2) {
-    margin-top: var(--space-lg);
-    margin-bottom: var(--space-sm);
-  }
-  
-  .post-content :global(h3) {
-    margin-top: var(--space-md);
-    margin-bottom: var(--space-sm);
-  }
-  
-  .post-content :global(p) {
-    margin-bottom: var(--space-md);
-  }
-  
-  .post-content :global(ul), 
-  .post-content :global(ol) {
-    margin-bottom: var(--space-md);
-    padding-left: var(--space-lg);
-  }
-  
-  .post-content :global(li) {
-    margin-bottom: var(--space-sm);
-  }
-  
-  .post-content :global(blockquote) {
-    margin: var(--space-md) 0;
-    padding: var(--space-sm);
-    border-left: 4px solid var(--sub-color);
-    background-color: color-mix(in srgb, var(--text-color) 5%, transparent);
-  }
-  
-  .post-content :global(img) {
-    max-width: 100%;
-    height: auto;
-    border-radius: var(--border-radius);
-    margin: var(--space-md) 0;
-  }
-  
-  footer {
-    margin-top: var(--space-xl);
-    padding-top: var(--space-md);
-    border-top: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
-  }
-  
-  .author {
-    margin-bottom: var(--space-md);
-    font-style: italic;
+  .post-navigation {
+    margin: var(--space-xl) 0;
     color: var(--sub-color);
-  }
-  
-  .share {
-    margin-bottom: var(--space-lg);
-  }
-  
-  .share p {
-    margin-bottom: var(--space-sm);
-    color: var(--sub-color);
-  }
-  
-  .share-links {
+    font-size: 90%;
     display: flex;
-    gap: var(--space-md);
+    justify-content: space-between;
+    align-items: center;
   }
   
-  .more-posts {
-    margin-top: var(--space-lg);
-    text-align: center;
+  .post-navigation a, .page-nav {
+    color: var(--sub-color);
+    text-decoration: none;
+  }
+  
+  .post-navigation a:hover {
+    color: var(--link-color);
   }
 </style>

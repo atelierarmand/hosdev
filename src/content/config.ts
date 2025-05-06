@@ -1,36 +1,48 @@
+// src/content/config.ts
 import { defineCollection, z } from 'astro:content';
 
-// Define the blog collection schema
+// Define project types
+const projectSchema = z.enum([
+  'hotel-management',
+  'digital-concierge',
+  'menucraft',
+  'bookwise'
+]);
+
 const blogCollection = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    description: z.string(),
+    description: z.string().optional(),
     pubDate: z.date(),
     updatedDate: z.date().optional(),
-    author: z.string().default('HosDev Team'),
-    image: z.string().optional(),
-    tags: z.array(z.string()).default([]),
-    draft: z.boolean().default(false),
-    featured: z.boolean().default(false),
-  }),
+    heroImage: z.string().optional(),
+    // Add project field to associate blog posts with projects
+    project: projectSchema.optional(),
+  })
 });
 
-// Define the features collection schema
-const featuresCollection = defineCollection({
+const pagesCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+  })
+});
+
+// Define projects collection
+const projectsCollection = defineCollection({
   type: 'data',
   schema: z.object({
     name: z.string(),
+    slug: projectSchema,
     description: z.string(),
-    longDescription: z.string().optional(),
-    status: z.enum(['available', 'coming-soon']),
-    icon: z.string().optional(),
-    order: z.number().default(999),
-  }),
+    status: z.enum(['online', 'offline']).default('online'),
+  })
 });
 
-// Export the collections
 export const collections = {
   'blog': blogCollection,
-  'features': featuresCollection,
+  'pages': pagesCollection,
+  'projects': projectsCollection,
 };

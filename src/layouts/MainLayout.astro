@@ -7,7 +7,7 @@ interface Props {
   description?: string;
 }
 
-const { title, description = "A modern development platform for hospitality management." } = Astro.props;
+const { title, description = "A blog about software, hospitality, and the tech that bridges them." } = Astro.props;
 
 // Get all blog posts for search functionality
 const allPosts = await getCollection('blog');
@@ -16,6 +16,7 @@ const searchableContent = allPosts.map(post => ({
   slug: post.slug,
   description: post.data.description || '',
   pubDate: post.data.pubDate,
+  // Add any other fields you want to search through
 }));
 ---
 
@@ -25,13 +26,16 @@ const searchableContent = allPosts.map(post => ({
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
     <meta name="description" content={description} />
-    <link rel="canonical" href="https://hosdev.dev" />
-    <meta property="og:site_name" content="HosDev">
+    <link rel="canonical" href="https://hospitality.dev" />
+    <meta property="og:site_name" content="Hospitality.dev">
     <meta property="og:title" content={title}>
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://hosdev.dev">
+    <meta property="og:url" content="https://hospitality.dev">
     <meta property="og:description" content={description}>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" type="image/png" href="/apple-icon-180x180.jpg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.jpg">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.jpg">
     <title>{title}</title>
     <style is:global>
       @import "../styles/global.css";
@@ -41,7 +45,7 @@ const searchableContent = allPosts.map(post => ({
     <div class="site-container">
       <header class="site-header">
         <a class="title" href="/">
-          <h1>hosdev</h1>
+          <h1>hospitality.dev</h1>
         </a>
         <nav>
           <p>
@@ -64,6 +68,8 @@ const searchableContent = allPosts.map(post => ({
               <p style="margin-left:0;padding-left: 0;">Use the left or right arrow keys on your keyboard to navigate between results.</p>
               <a href="/posts">all posts</a>
               <a href="/about">about</a>
+              <a href="#" onclick="document.getElementById('search-input').value='astro';document.getElementById('search-input').dispatchEvent(new Event('input'));return false;">astro</a>
+              <a href="#" onclick="document.getElementById('search-input').value='tutorial';document.getElementById('search-input').dispatchEvent(new Event('input'));return false;">tutorial</a>
             </div>
           </div>
         </div>
@@ -71,8 +77,8 @@ const searchableContent = allPosts.map(post => ({
       
       <main class="site-main">
         <div class="content-container">
-          <slot />
-        </div>
+      <slot />
+    </div>
       </main>
       
       <footer class="site-footer">

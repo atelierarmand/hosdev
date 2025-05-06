@@ -1,8 +1,0 @@
-{
-  "name": "Guest Experience",
-  "description": "Digital concierge, mobile check-in/out, and personalized guest communication platform.",
-  "longDescription": "Our Guest Experience module enhances every touchpoint in the guest journey. From digital check-in to personalized recommendations, this comprehensive platform helps you create memorable experiences that drive guest satisfaction and loyalty.\n\nUpcoming features include:\n- Mobile check-in and check-out\n- Digital room keys\n- In-app messaging and requests\n- Local recommendations and activities booking\n- Guest profile management\n- Feedback collection and management\n- Personalized promotional offers",
-  "status": "coming-soon",
-  "icon": "user",
-  "order": 4
-}

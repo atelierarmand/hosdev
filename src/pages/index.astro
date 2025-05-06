@@ -1,62 +1,48 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
 
-// Define features for the platform
-const features = [
-  {
-    id: "property-management",
-    name: "Property Management",
-    description: "Comprehensive tools for managing properties, rooms, and facilities with real-time availability tracking.",
-    status: "available"
-  },
-  {
-    id: "booking-system",
-    name: "Booking System",
-    description: "End-to-end reservation system with calendar view, payment processing, and guest communication.",
-    status: "available"
-  },
-  {
-    id: "analytics",
-    name: "Analytics Dashboard",
-    description: "Data visualization and reporting tools to track performance metrics and identify business opportunities.",
-    status: "available"
-  },
-  {
-    id: "guest-experience",
-    name: "Guest Experience",
-    description: "Digital concierge, mobile check-in/out, and personalized guest communication platform.",
-    status: "coming-soon"
-  },
-  {
-    id: "staff-management",
-    name: "Staff Management",
-    description: "Schedule management, task assignment, and performance tracking for hospitality staff.",
-    status: "coming-soon"
-  },
-  {
-    id: "integration-api",
-    name: "Integration API",
-    description: "Connect with third-party services like POS systems, payment gateways, and distribution channels.",
-    status: "coming-soon"
-  }
-];
+// Get all projects
+const projects = await getCollection('projects');
+
+// Get all blog posts
+const allPosts = await getCollection('blog');
+
+// Create a map of project slugs to their most recent blog post
+const projectPosts = new Map();
+
+// Group posts by project
+projects.forEach(project => {
+  const projectSlug = project.data.slug;
+  
+  // Find posts associated with this project
+  const postsForProject = allPosts.filter(post => post.data.project === projectSlug);
+  
+  // Sort by date (newest first)
+  const sortedPosts = postsForProject.sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+  );
+  
+  // Store the most recent post for this project
+  projectPosts.set(projectSlug, sortedPosts[0] || null);
+});
 ---
 
-<MainLayout title="HosDev | Modern Hospitality Management">
+<MainLayout title="Hospitality.dev | Home">
   <main>
     <h2 class="home">
-      A comprehensive development platform for modern hospitality management. Build and scale your hospitality business with powerful, user-friendly tools designed for today's digital landscape.
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
     </h2>
     
     <div class="seprtr">
-      <h3 class="features-h3">Platform Features</h3>
+      <h3 class="projects-h3">Projects</h3>
       <div class="container">
-        {features.map(feature => {
+        {projects.map(project => {
           return (
             <div class="box">
-              <a href={`/features/${feature.id}`}>
-                <h4 class="feature-status ${feature.status}">{feature.name}</h4>
-                <p class="service-desc">{feature.description}</p>
+              <a href={`/${project.data.slug}`}>
+                <h4>{project.data.name}</h4>
+                <p class="service-desc">{project.data.description}</p>
               </a>
             </div>
           );
@@ -64,23 +50,40 @@ const features = [
       </div>
     </div>
     
-    <div class="seprtr">
-      <h3 class="about-h3">Why HosDev?</h3>
-      <p>HosDev is built by hospitality professionals for hospitality professionals. We understand the unique challenges faced by hotels, resorts, and other accommodation providers in the digital age.</p>
-      <br>
-      <p>Our platform combines the best of modern technology with industry-specific knowledge to create tools that actually solve real problems in the hospitality sector.</p>
-      <br>
-      <div class="see-all">
-        <a href="/about" class="btn">Learn More</a>
-      </div>
-    </div>
+    <!-- Only keeping the Projects section, removing Services and Recent Articles -->
   </main>
 </MainLayout>
 
 <style>
   /* Main styles */
   main {
-    margin: calc(1.75 * var(--space-md)) 0;
+    margin: calc(1.75 * var(--spacing-md)) 0;
+  }
+  
+  .home {
+    font-size: 1.125rem;
+    font-weight: 500;
+    letter-spacing: normal;
+    line-height: 1.6;
+  }
+  
+  /* Separator */
+  .seprtr {
+    margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  /* Section headers */
+  .services-h3, .projects-h3, .now-h3 {
+    overflow: hidden;
+    padding-top: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+    font-size: 90%;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    text-shadow: none;
   }
   
   /* Grid layout for boxes */
@@ -88,45 +91,233 @@ const features = [
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    max-width: var(--width);
+    max-width: var(--container-width);
     margin: auto;
   }
   
-  /* Feature boxes */
+  /* Project and service boxes */
   .box {
     cursor: pointer;
-    flex: 1 1 30%;
+    flex: 1 1 10%;
     padding: 15px 20px;
     border-radius: 10px;
     text-align: left;
-    min-width: 180px;
-    height: 140px;
+    min-width: 200px;
+    height: 140px; /* Increased height to allow for more text */
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    border: 1px solid color-mix(in srgb, var(--text-color) 5%, transparent);
+    justify-content: flex-start; /* Align content to top */
+    border: 1px solid var(--color-border);
   }
   
   .box:hover {
-    border: 1px solid color-mix(in srgb, var(--text-color) 0%, transparent);
-    background: color-mix(in srgb, var(--text-color) 5%, transparent);
-    box-shadow: 0 4px 8px color-mix(in srgb, var(--text-color) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-text) 0%, transparent);
+    background: color-mix(in srgb, var(--color-text) 5%, transparent);
+    box-shadow: 0 4px 8px color-mix(in srgb, var(--color-text) 8%, transparent);
   }
   
   .box a:hover {
+    text-decoration: none; /* Remove underline on hover */
+  }
+  
+  .box h4 {
+    color: var(--color-text);
+    font-size: 13px;
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    margin-top: 0; /* Remove top margin completely */
+  }
+  
+  .box h2 {
+    font-size: 20px;
+    margin: 0 0 10px;
+  }
+  
+  .service-desc {
+    line-height: 1.5;
+    font-size: 85%; /* Smaller font size */
+    color: color-mix(in srgb, var(--color-text) 90%, transparent);
+    /* Limit character display to keep boxes consistent */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Increased from 2 to 3 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0; /* Remove bottom margin */
+  }
+  
+  /* Project status indicators - removed entirely */
+  
+  .project-status.offline::after {
+    content: "offline";
+    margin-left: 10px;
+    color: color-mix(in srgb, var(--color-text) 50%, transparent);
+    font-size: 75%;
+  }
+  
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1.2);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  /* Scrolling container */
+  .n-container {
+    font-weight: 400;
+    font-size: 85%;
+    color: var(--color-text);
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  
+  .n-container-scroller {
+    position: relative;
+    width: 100%;
+    height: var(--spacing-lg);
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .n-container-wrapper {
+    position: absolute;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    gap: 100px;
+    padding: 0 50px;
+  }
+  
+  .fade-left, .fade-right {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 80px;
+    pointer-events: none;
+    z-index: 10;
+  }
+  
+  .fade-left {
+    left: 0;
+    background: linear-gradient(to right, var(--color-bg) 50%, transparent 100%);
+  }
+  
+  .fade-right {
+    right: 0;
+    background: linear-gradient(to left, var(--color-bg) 50%, transparent 100%);
+  }
+  
+  /* Blog post lists */
+  ul.blog-posts {
+    list-style-type: none;
+    padding: 0;
+    margin: var(--spacing-lg) 0;
+  }
+  
+  ul.blog-posts li {
+    display: block;
+    overflow: hidden;
+    padding: .75rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-text) 5%, transparent);
+  }
+  
+  ul.blog-posts li:last-child {
+    border-bottom: 1px solid color-mix(in srgb, var(--color-text) 0%, transparent);
+  }
+  
+  ul.blog-posts li:hover {
+    background: color-mix(in srgb, var(--color-text) 5%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-text) 0%, transparent);
+    margin: 0 -.75rem;
+    padding: .75rem;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  
+  ul.blog-posts li a {
+    display: flex;
+    justify-content: space-between;
     text-decoration: none;
+    white-space: nowrap;
+    color: currentColor;
+  }
+  
+  ul.blog-posts li span {
+    max-width: calc(100% - 110px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  ul.blog-posts li time {
+    font-size: 88%;
+    color: var(--color-muted);
+  }
+  
+  /* Buttons */
+  .btn {
+    display: inline-block;
+    background: var(--color-accent);
+    color: white;
+    padding: 0.75rem 1.8rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    font-family: var(--font-sans);
+    transition: all 0.2s ease;
+    border: 2px solid var(--color-accent);
+  }
+  
+  .btn:hover {
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+  
+  .btn-outline {
+    background: transparent;
+    color: var(--color-accent);
+    border: 2px solid var(--color-accent);
+  }
+  
+  .btn-outline:hover {
+    background: var(--color-accent);
+    color: white;
+  }
+  
+  .see-all {
+    text-align: center;
+    margin-top: var(--spacing-lg);
   }
   
   /* Responsive design */
   @media (max-width: 768px) {
     .box {
       flex: 1 1 100%;
-      height: auto;
-      min-height: 120px;
+      height: 130px; /* Adjusted height on mobile */
     }
     
     .container {
-      gap: 15px;
+      gap: 15px; /* Smaller gap on mobile */
+    }
+    
+    ul.blog-posts li a {
+      flex-direction: column;
+    }
+    
+    ul.blog-posts li span {
+      max-width: 100%;
+      margin-bottom: 5px;
     }
   }
 </style>
+
+<!-- Removed scrolling script since we removed the container -->

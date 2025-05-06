@@ -1,0 +1,86 @@
+---
+import MainLayout from './MainLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props.frontmatter || Astro.props;
+---
+
+<MainLayout title={`${title} | Hospitality.dev`} description={description}>
+  <main class="page-content">
+    <article class="content-article">
+      <slot />
+    </article>
+  </main>
+</MainLayout>
+
+<style>
+  .page-content {
+    /* No layout margin needed */
+    max-width: var(--width);
+    width: 100%;
+  }
+  
+  .content-article {
+    max-width: var(--width);
+    width: 100%;
+  }
+  
+  .content-article :global(h1) {
+    font-weight: 550;
+    letter-spacing: -.5px;
+    background: linear-gradient(to bottom, var(--text-color), var(--sub-color));
+    -webkit-background-clip: text;
+    color: var(--tx-clip);
+    text-shadow: var(--tx-shadow);
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+  }
+  
+  .content-article :global(h2) {
+    overflow: hidden;
+    padding-top: var(--space-sm);
+    padding-bottom: var(--space-sm);
+    margin-bottom: var(--space-md);
+    font-size: 95%;
+    text-transform: uppercase;
+    color: var(--sub-color);
+    text-shadow: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
+  }
+  
+  .content-article :global(p) {
+    margin-bottom: var(--space-md);
+    line-height: 1.7;
+  }
+  
+  .content-article :global(ul), .content-article :global(ol) {
+    margin-bottom: var(--space-md);
+    padding-left: var(--space-lg);
+    list-style-type: disc;
+  }
+  
+  .content-article :global(li) {
+    margin-bottom: var(--space-sm);
+    line-height: 1.6;
+  }
+  
+  .content-article :global(strong) {
+    color: var(--heading-color);
+    font-weight: 500;
+  }
+  
+  .content-article :global(a) {
+    color: var(--link-color);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--text-color) 30%, transparent);
+  }
+  
+  .content-article :global(a:hover) {
+    text-decoration-color: color-mix(in srgb, var(--text-color) 50%, transparent);
+    color: var(--visited-color);
+  }
+</style>

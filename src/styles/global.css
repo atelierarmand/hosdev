@@ -617,7 +617,7 @@ ul.blog-posts li time {
   color: color-mix(in srgb, var(--text-color) 90%, transparent);
 }
 
-.feature-status.available::after {
+.project-status.online::after {
   content: "";
   display: inline-block;
   width: 8px;
@@ -628,8 +628,8 @@ ul.blog-posts li time {
   animation: pulse 2s infinite;
 }
 
-.feature-status.coming-soon::after {
-  content: "coming soon";
+.project-status.offline::after {
+  content: "offline";
   margin-left: 10px;
   color: color-mix(in srgb, var(--text-color) 50%, transparent);
   font-size: 75%;
@@ -665,7 +665,7 @@ ul.blog-posts li time {
 }
 
 /* Section headers */
-.features-h3, .projects-h3, .about-h3 {
+.services-h3, .projects-h3, .now-h3 {
   overflow: hidden;
   padding-top: var(--space-sm);
   padding-bottom: var(--space-sm);
@@ -675,6 +675,52 @@ ul.blog-posts li time {
   text-transform: uppercase;
   color: var(--sub-color);
   text-shadow: none;
+}
+
+/* Scrolling container */
+.n-container {
+  font-weight: 400;
+  font-size: 85%;
+  color: var(--text-color);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.n-container-scroller {
+  position: relative;
+  width: 100%;
+  height: var(--space-lg);
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: var(--space-lg);
+}
+
+.n-container-wrapper {
+  position: absolute;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 100px;
+  padding: 0 50px;
+}
+
+.fade-left, .fade-right {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 80px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.fade-left {
+  left: 0;
+  background: linear-gradient(to right, var(--background-color) 50%, transparent 100%);
+}
+
+.fade-right {
+  right: 0;
+  background: linear-gradient(to left, var(--background-color) 50%, transparent 100%);
 }
 
 /* Buttons */

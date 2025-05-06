@@ -1,0 +1,11 @@
+---
+// Redirect from /blog to /posts
+export function getStaticPaths() {
+  return [];
+}
+
+// Server-side redirect
+const redirect = Astro.redirect("/posts");
+---
+
+<meta http-equiv="refresh" content="0;url=/posts" />

@@ -1,0 +1,212 @@
+---
+import MainLayout from './MainLayout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  pubDate: string | Date;
+  updatedDate?: string | Date;
+  project?: any;
+}
+
+const { title, description, pubDate, updatedDate, project } = Astro.props;
+
+// Format dates
+const formattedPubDate = new Date(pubDate).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const formattedUpdatedDate = updatedDate 
+  ? new Date(updatedDate).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  : null;
+---
+
+<MainLayout title={title} description={description}>
+  <main class="page-content">
+    <article class="content-article">
+      <h1>{title}</h1>
+      
+      <div class="post-metadata">
+        <div class="post-time">
+          <time datetime={pubDate.toString()}>{formattedPubDate}</time>
+          {formattedUpdatedDate && (
+            <span class="updated-time">
+              (Updated: {formattedUpdatedDate})
+            </span>
+          )}
+        </div>
+        
+        {project && (
+          <div class="post-project">
+            <span>Project: </span>
+            <a href={`/${project.slug}`}>{project.name}</a>
+          </div>
+        )}
+      </div>
+      
+      <div class="post-content">
+        <slot />
+      </div>
+      
+      <div class="post-navigation">
+        {project ? (
+          <a href={`/${project.slug}`} class="page-nav">&larr; Back to {project.name}</a>
+        ) : (
+          <a href="/posts" class="page-nav">&larr; Back to all posts</a>
+        )}
+      </div>
+    </article>
+  </main>
+</MainLayout>
+
+<style>
+  .page-content {
+    /* No layout margin needed */
+    max-width: var(--width);
+    width: 100%;
+  }
+  
+  .content-article {
+    max-width: var(--width);
+    width: 100%;
+  }
+  
+  h1 {
+    font-weight: 550;
+    letter-spacing: -.5px;
+    background: linear-gradient(to bottom, var(--text-color), var(--sub-color));
+    -webkit-background-clip: text;
+    color: var(--tx-clip);
+    text-shadow: var(--tx-shadow);
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+  }
+  
+  .post-metadata {
+    margin-bottom: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .post-time {
+    font-size: 90%;
+    color: var(--sub-color);
+  }
+  
+  .updated-time {
+    margin-left: var(--space-sm);
+    font-style: italic;
+  }
+  
+  .post-project {
+    font-size: 90%;
+    color: var(--sub-color);
+  }
+  
+  .post-project a {
+    color: var(--link-color);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--text-color) 30%, transparent);
+  }
+  
+  .post-project a:hover {
+    text-decoration-color: color-mix(in srgb, var(--text-color) 50%, transparent);
+    color: var(--visited-color);
+  }
+  
+  .post-content :global(h2) {
+    overflow: hidden;
+    padding-top: var(--space-sm);
+    padding-bottom: var(--space-sm);
+    margin-bottom: var(--space-md);
+    font-size: 95%;
+    text-transform: uppercase;
+    color: var(--sub-color);
+    text-shadow: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
+  }
+  
+  .post-content :global(p) {
+    margin-bottom: var(--space-md);
+    line-height: 1.7;
+  }
+  
+  .post-content :global(ul), .post-content :global(ol) {
+    margin-bottom: var(--space-md);
+    padding-left: var(--space-lg);
+    list-style-type: disc;
+  }
+  
+  .post-content :global(li) {
+    margin-bottom: var(--space-sm);
+    line-height: 1.6;
+  }
+  
+  .post-content :global(strong) {
+    color: var(--heading-color);
+    font-weight: 500;
+  }
+  
+  .post-content :global(a) {
+    color: var(--link-color);
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--text-color) 30%, transparent);
+  }
+  
+  .post-content :global(a:hover) {
+    text-decoration-color: color-mix(in srgb, var(--text-color) 50%, transparent);
+    color: var(--visited-color);
+  }
+  
+  .post-content :global(pre) {
+    padding: 1em;
+    margin: 1em 0;
+    overflow: auto;
+    white-space: pre-wrap;
+    border: 1px solid rgb(162 156 156 / .13);
+    font-size: 14px;
+    background-color: var(--code-bg-color);
+    border-radius: 3px;
+  }
+  
+  .post-content :global(code) {
+    font-family: var(--font-mono);
+    font-size: .95em;
+    background-color: var(--code-bg-color);
+    padding: .2em .4em;
+    border-radius: 3px;
+  }
+  
+  .post-content :global(blockquote) {
+    margin: var(--space-md) 0;
+    padding: var(--space-bd) var(--space-sm);
+    border-left: 4px solid var(--link-color);
+    background-color: color-mix(in srgb, var(--link-color) 5%, var(--background-color));
+    color: var(--blockquote-color);
+  }
+  
+  .post-navigation {
+    margin-top: var(--space-xl);
+    color: var(--sub-color);
+    font-size: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .post-navigation a, .page-nav {
+    color: var(--sub-color);
+    text-decoration: none;
+  }
+  
+  .post-navigation a:hover {
+    color: var(--link-color);
+  }
+</style>
