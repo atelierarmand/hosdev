@@ -1,22 +1,26 @@
-# HosDev - Hospitality Development Platform
+# HosDev - Hospitality Development Blog
 
-A modern development platform for hospitality management built with Astro.
+A modern blog and project showcase for hospitality technology, built with [Astro](https://astro.build).
+
+![HosDev Screenshot](public/screenshot.png)
 
 ## Features
 
-- Modern, responsive design
-- Fast, static site generation with Astro
-- Content management with Astro's content collections
-- Blog functionality with Markdown support
-- Feature showcase pages
-- Search functionality
+- **Fast, static site** built with Astro
+- **MDX support** for enhanced content
+- **Content collections** for organized content management
+- **Project showcase** with linked blog posts
+- **Responsive design** that works on all devices
+- **Dark/light mode** support
+- **Search functionality** with keyboard shortcuts
+- **Zero client-side JavaScript** by default (Islands architecture)
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 or later recommended)
-- npm (v8 or later recommended)
+- Node.js (v18+)
+- npm (v8+)
 
 ### Installation
 
@@ -36,21 +40,12 @@ npm install
 npm run dev
 ```
 
-The site will be available at http://localhost:4321
+Visit `http://localhost:4321` (or the port shown in your terminal) to see the site.
 
-### Building for Production
+## Documentation
 
-To build the site for production:
-
-```bash
-npm run build
-```
-
-To preview the production build locally:
-
-```bash
-npm run preview
-```
+- [Instructions](INSTRUCTIONS.md) - Detailed developer guide
+- [Quick Reference](QUICK-REFERENCE.md) - Common commands and templates
 
 ## Project Structure
 
@@ -58,33 +53,51 @@ npm run preview
 /
 ├── public/             # Static assets
 ├── src/
-│   ├── components/     # Reusable UI components
 │   ├── content/        # Content collections
 │   │   ├── blog/       # Blog posts
-│   │   ├── features/   # Feature definitions
-│   │   └── config.ts   # Collection configuration
-│   ├── layouts/        # Page layouts
-│   ├── pages/          # Page components
+│   │   ├── projects/   # Project definitions
+│   │   └── config.ts   # Collection schemas
+│   ├── layouts/        # Layout components
+│   ├── pages/          # Pages and routes
 │   └── styles/         # Global styles
-└── package.json        # Project dependencies and scripts
+└── astro.config.mjs    # Astro configuration
 ```
 
 ## Content Management
 
-### Blog Posts
+### Adding Blog Posts
 
-Blog posts are stored as Markdown files in `src/content/blog/`. Each file includes frontmatter with metadata.
+Create a new `.md` or `.mdx` file in `src/content/blog/` with the required frontmatter:
 
-### Features
+```md
+---
+title: "Post Title"
+description: "Brief description"
+pubDate: 2025-05-01
+project: hotel-management  # Optional
+---
 
-Feature definitions are stored as JSON files in `src/content/features/`.
+Content goes here...
+```
 
-## Technologies Used
+### Adding Projects
 
-- [Astro](https://astro.build/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [MDX](https://mdxjs.com/) for content
+Create a new JSON file in `src/content/projects/`:
+
+```json
+{
+  "name": "Project Name",
+  "slug": "project-slug",
+  "description": "Project description.",
+  "status": "online"
+}
+```
 
 ## License
 
-This project is licensed under the MIT License.
+[MIT License](LICENSE)
+
+## Acknowledgments
+
+- Built with [Astro](https://astro.build)
+- Design inspired by minimalist blogs like [Daring Fireball](https://daringfireball.net) and [MGX.me](https://mgx.me)
