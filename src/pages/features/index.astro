@@ -1,0 +1,155 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+// Get all features and sort by order
+const allFeatures = await getCollection('features');
+const sortedFeatures = allFeatures.sort((a, b) => a.data.order - b.data.order);
+
+// Split features by status
+const availableFeatures = sortedFeatures.filter(feature => feature.data.status === 'available');
+const comingSoonFeatures = sortedFeatures.filter(feature => feature.data.status === 'coming-soon');
+---
+
+<MainLayout title="Features | HosDev">
+  <div class="features-container">
+    <h1>Platform Features</h1>
+    <p class="subtitle">Explore the tools that power modern hospitality management</p>
+    
+    <section class="feature-section">
+      <h2>Available Now</h2>
+      <div class="features-grid">
+        {availableFeatures.map(feature => (
+          <a href={`/features/${feature.id}`} class="feature-card">
+            <h3 class="feature-title feature-status available">{feature.data.name}</h3>
+            <p class="feature-desc">{feature.data.description}</p>
+            <span class="feature-link">Learn more →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+    
+    <section class="feature-section">
+      <h2>Coming Soon</h2>
+      <div class="features-grid">
+        {comingSoonFeatures.map(feature => (
+          <a href={`/features/${feature.id}`} class="feature-card">
+            <h3 class="feature-title feature-status coming-soon">{feature.data.name}</h3>
+            <p class="feature-desc">{feature.data.description}</p>
+            <span class="feature-link">Learn more →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+    
+    <section class="cta-section">
+      <h2>Ready to transform your hospitality business?</h2>
+      <p>Experience the power of HosDev with a personalized demo.</p>
+      <div class="cta-buttons">
+        <a href="/demo" class="btn">Request Demo</a>
+        <a href="/contact" class="btn btn-outline">Contact Sales</a>
+      </div>
+    </section>
+  </div>
+</MainLayout>
+
+<style>
+  .features-container {
+    max-width: var(--width);
+    margin: 0 auto;
+    padding: 0 var(--space-sm);
+  }
+  
+  h1 {
+    margin-bottom: var(--space-sm);
+  }
+  
+  .subtitle {
+    color: var(--sub-color);
+    margin-bottom: var(--space-lg);
+    font-size: 1.1rem;
+  }
+  
+  .feature-section {
+    margin-bottom: var(--space-xl);
+  }
+  
+  .feature-section h2 {
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-md);
+  }
+  
+  .feature-card {
+    padding: var(--space-md);
+    border-radius: var(--border-radius);
+    background-color: color-mix(in srgb, var(--text-color) 5%, transparent);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--text-color);
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-3px);
+    background-color: color-mix(in srgb, var(--text-color) 8%, transparent);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+  }
+  
+  .feature-title {
+    margin-top: 0;
+    margin-bottom: var(--space-sm);
+    font-size: 1.3rem;
+  }
+  
+  .feature-desc {
+    margin-bottom: var(--space-md);
+    color: color-mix(in srgb, var(--text-color) 90%, transparent);
+    flex-grow: 1;
+  }
+  
+  .feature-link {
+    font-weight: 500;
+    color: var(--text-color);
+  }
+  
+  .cta-section {
+    margin-top: var(--space-xl);
+    padding: var(--space-lg);
+    border-radius: var(--border-radius);
+    background-color: color-mix(in srgb, var(--text-color) 8%, transparent);
+    text-align: center;
+  }
+  
+  .cta-section h2 {
+    margin-top: 0;
+    border-bottom: none;
+  }
+  
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+  
+  @media (max-width: 600px) {
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .cta-buttons {
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+  }
+</style>

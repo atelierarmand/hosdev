@@ -1,0 +1,250 @@
+---
+// MainLayout.astro
+import { getCollection } from 'astro:content';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "A modern development platform for hospitality management." } = Astro.props;
+
+// Get all blog posts for search functionality
+const allPosts = await getCollection('blog');
+const searchableContent = allPosts.map(post => ({
+  title: post.data.title,
+  slug: post.slug,
+  description: post.data.description || '',
+  pubDate: post.data.pubDate,
+}));
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href="https://hosdev.dev" />
+    <meta property="og:site_name" content="HosDev">
+    <meta property="og:title" content={title}>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hosdev.dev">
+    <meta property="og:description" content={description}>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <style is:global>
+      @import "../styles/global.css";
+    </style>
+  </head>
+  <body>
+    <div class="site-container">
+      <header class="site-header">
+        <a class="title" href="/">
+          <h1>hosdev</h1>
+        </a>
+        <nav>
+          <p>
+            <a id="nav-special" aria-label="Posts" href="/posts">posts</a>
+            <a id="nav-special" aria-label="About" href="/about">about</a>
+            <a href="#" id="search-link" aria-label="Open search">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              &nbsp;&#x2318;K
+            </a>
+          </p>
+        </nav>
+        <div id="search-popup" class="search-popup" style="display:none;">
+          <div class="search-container">
+            <input type="text" id="search-input" autocomplete="off" spellcheck="false" autocapitalize="off" placeholder="search posts or tags..." aria-label="search posts or tags">
+            <div id="search-results"></div>
+            <div class="quick-links">
+              <p style="margin-left:0;padding-left: 0;">Use the left or right arrow keys on your keyboard to navigate between results.</p>
+              <a href="/posts">all posts</a>
+              <a href="/about">about</a>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <main class="site-main">
+        <div class="content-container">
+          <slot />
+        </div>
+      </main>
+      
+      <footer class="site-footer">
+        <div>
+          <div id="custom-footer-text">
+            <span id="sub">
+              <a style="color:var(--color-muted);" href="/feed?type=rss">rss</a>
+              • <a style="color:var(--color-muted);" href="/feed">atom</a>
+            </span>
+            <a id="powered-by" href="https://astro.build">powered by astro</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script define:vars={{ searchableContent }}>
+      // Make the searchable content available to the client-side JavaScript
+      const allPosts = searchableContent;
+      
+      function toggleSearchPopup() {
+        const searchPopup = document.getElementById('search-popup');
+        if (searchPopup.style.display === 'none' || searchPopup.style.display === '') {
+          openSearchPopup();
+        } else {
+          closeSearchPopup();
+        }
+      }
+      
+      function openSearchPopup() {
+        document.getElementById('search-popup').style.display = 'flex';
+        document.getElementById('search-input').focus();
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function closeSearchPopup() {
+        document.getElementById('search-popup').style.display = 'none';
+        document.getElementById('search-input').value = '';
+        document.getElementById('search-results').innerHTML = '';
+        document.body.style.overflow = '';
+      }
+      
+      function searchPosts(searchTerm) {
+        // Simple client-side search implementation
+        searchTerm = searchTerm.toLowerCase().trim();
+        
+        if (!searchTerm) return [];
+        
+        return allPosts.filter(post => {
+          const title = post.title.toLowerCase();
+          const description = post.description ? post.description.toLowerCase() : '';
+          
+          // Check if the search term is in the title or description
+          const matchesTitle = title.includes(searchTerm);
+          const matchesDescription = description.includes(searchTerm);
+          
+          // Return the match with metadata
+          if (matchesTitle || matchesDescription) {
+            return {
+              ...post,
+              searchTerm: searchTerm,
+              contentMatch: matchesDescription && !matchesTitle
+            };
+          }
+          
+          return false;
+        }).sort((a, b) => {
+          // Sort by date (newest first)
+          return new Date(b.pubDate) - new Date(a.pubDate);
+        });
+      }
+      
+      function displaySearchResults(results) {
+        const resultsHtml = results.map(post => {
+          const formattedDate = new Date(post.pubDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+          });
+          
+          let postHtml = `<a href="/${post.slug}">
+            <span class="post-title">${post.title}</span>
+            <span class="post-date">${formattedDate}</span>`;
+          
+          if (post.contentMatch) {
+            postHtml += `<div class="match-context">Match in description: "${post.searchTerm}"</div>`;
+          }
+          
+          postHtml += `</a>`;
+          return postHtml;
+        }).join('');
+        
+        document.getElementById('search-results').innerHTML = results.length > 0 
+          ? resultsHtml
+          : '<p style="padding-left:10px;">no match found</p>';
+      }
+      
+      document.addEventListener('DOMContentLoaded', function() {
+        // Set up keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+          if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSearchPopup();
+          }
+          
+          if (e.key === 'Escape') {
+            closeSearchPopup();
+          }
+        });
+        
+        // Set up click handlers
+        document.getElementById('search-link').addEventListener('click', function(e) {
+          e.preventDefault();
+          toggleSearchPopup();
+        });
+        
+        document.getElementById('search-popup').addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeSearchPopup();
+          }
+        });
+        
+        document.getElementById('search-popup').addEventListener('touchstart', function(e) {
+          if (e.target === this) {
+            closeSearchPopup();
+          }
+        }, {
+          passive: true
+        });
+        
+        // Set up search input handler
+        document.getElementById('search-input').addEventListener('input', function(e) {
+          const searchTerm = e.target.value;
+          if (searchTerm === '') {
+            document.getElementById('search-results').innerHTML = '';
+          } else {
+            const results = searchPosts(searchTerm);
+            displaySearchResults(results);
+          }
+        });
+        
+        // Handle arrow key navigation in search results
+        document.addEventListener('keydown', function(e) {
+          const searchPopup = document.getElementById('search-popup');
+          if (searchPopup.style.display === 'none') return;
+          
+          const links = document.querySelectorAll('#search-results a');
+          if (links.length === 0) return;
+          
+          // Find the currently focused link
+          const focused = document.activeElement;
+          let focusedIndex = -1;
+          
+          for (let i = 0; i < links.length; i++) {
+            if (links[i] === focused) {
+              focusedIndex = i;
+              break;
+            }
+          }
+          
+          // Handle arrow key navigation
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            const nextIndex = focusedIndex < links.length - 1 ? focusedIndex + 1 : 0;
+            links[nextIndex].focus();
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            const prevIndex = focusedIndex > 0 ? focusedIndex - 1 : links.length - 1;
+            links[prevIndex].focus();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

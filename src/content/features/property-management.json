@@ -1,0 +1,8 @@
+{
+  "name": "Property Management",
+  "description": "Comprehensive tools for managing properties, rooms, and facilities with real-time availability tracking.",
+  "longDescription": "Our Property Management module provides everything you need to maintain an accurate inventory of your accommodation offerings. From room types and rates to amenities and maintenance schedules, this powerful system keeps all your property information organized and accessible.\n\nFeatures include:\n- Room and property type management\n- Dynamic rate management\n- Maintenance scheduling and tracking\n- Amenity and facility management\n- Real-time availability updates\n- Multi-property support for hotel groups",
+  "status": "available",
+  "icon": "building",
+  "order": 1
+}

@@ -39,3 +39,7 @@ coverage/
 # Misc
 .cache/
 .temp/
+**/.claude/settings.local.json
+
+# Exclude reference blog-site
+blog-site/

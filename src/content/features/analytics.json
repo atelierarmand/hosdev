@@ -1,0 +1,8 @@
+{
+  "name": "Analytics Dashboard",
+  "description": "Data visualization and reporting tools to track performance metrics and identify business opportunities.",
+  "longDescription": "Our Analytics Dashboard transforms your operational data into actionable insights. With comprehensive reporting and visualization tools, you can track key performance indicators, identify trends, and make data-driven decisions to optimize your business.\n\nFeatures include:\n- Customizable dashboard views\n- Occupancy and revenue reports\n- Channel performance analysis\n- Forecasting and trend identification\n- Exportable reports in multiple formats\n- Automated scheduled reporting\n- Performance benchmarking",
+  "status": "available",
+  "icon": "chart",
+  "order": 3
+}

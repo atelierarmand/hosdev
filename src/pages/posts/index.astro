@@ -1,0 +1,129 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+
+// Sample posts data (in a real app, this would come from a content collection)
+const posts = [
+  {
+    title: "Introducing HosDev Platform",
+    slug: "introducing-hosdev",
+    pubDate: new Date('2025-05-01'),
+    description: "Announcing the launch of our modern hospitality management platform."
+  },
+  {
+    title: "Best Practices for Hotel Management",
+    slug: "hotel-management-best-practices",
+    pubDate: new Date('2025-04-15'),
+    description: "Learn how to optimize your hotel operations with these industry-proven best practices."
+  },
+  {
+    title: "The Future of Guest Experience",
+    slug: "future-of-guest-experience",
+    pubDate: new Date('2025-04-01'),
+    description: "How technology is transforming the way guests interact with hospitality businesses."
+  },
+  {
+    title: "Implementing Digital Check-in Systems",
+    slug: "digital-check-in-systems",
+    pubDate: new Date('2025-03-15'),
+    description: "A step-by-step guide to implementing digital check-in at your property."
+  },
+  {
+    title: "Data-Driven Decision Making in Hospitality",
+    slug: "data-driven-hospitality",
+    pubDate: new Date('2025-03-01'),
+    description: "How to use analytics to make better business decisions in the hospitality industry."
+  }
+];
+---
+
+<MainLayout title="Blog Posts | HosDev">
+  <div class="posts-container">
+    <h1>Latest Posts</h1>
+    <p class="subtitle">Insights, guides, and updates from the HosDev team</p>
+    
+    <ul class="blog-posts">
+      {posts.map((post) => (
+        <li>
+          <a href={`/posts/${post.slug}`}>
+            <span>{post.title}</span>
+            <time datetime={post.pubDate.toISOString()}>
+              {post.pubDate.toLocaleDateString('en-us', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </time>
+          </a>
+        </li>
+      ))}
+    </ul>
+    
+    <div class="subscribe">
+      <h3>Stay Updated</h3>
+      <p>Subscribe to our newsletter to receive the latest updates and articles.</p>
+      <form class="newsletter-form">
+        <input type="email" placeholder="Your email address" aria-label="Email address for newsletter" required />
+        <button type="submit" class="btn">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</MainLayout>
+
+<style>
+  .posts-container {
+    max-width: var(--width);
+    margin: 0 auto;
+    padding: 0 var(--space-sm);
+  }
+  
+  h1 {
+    margin-bottom: var(--space-sm);
+  }
+  
+  .subtitle {
+    color: var(--sub-color);
+    margin-bottom: var(--space-lg);
+  }
+  
+  .subscribe {
+    margin-top: var(--space-xl);
+    padding: var(--space-md);
+    background-color: color-mix(in srgb, var(--text-color) 5%, transparent);
+    border-radius: var(--border-radius);
+  }
+  
+  .subscribe h3 {
+    margin-top: 0;
+    margin-bottom: var(--space-sm);
+  }
+  
+  .newsletter-form {
+    display: flex;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+  }
+  
+  .newsletter-form input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--sub-color);
+    border-radius: var(--border-radius);
+    background-color: color-mix(in srgb, var(--background-color) 95%, transparent);
+    color: var(--text-color);
+  }
+  
+  .newsletter-form input:focus {
+    outline: none;
+    border-color: var(--link-color);
+  }
+  
+  @media (max-width: 600px) {
+    .newsletter-form {
+      flex-direction: column;
+    }
+    
+    .newsletter-form .btn {
+      width: 100%;
+    }
+  }
+</style>

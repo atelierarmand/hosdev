@@ -1,0 +1,132 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+// Define features for the platform
+const features = [
+  {
+    id: "property-management",
+    name: "Property Management",
+    description: "Comprehensive tools for managing properties, rooms, and facilities with real-time availability tracking.",
+    status: "available"
+  },
+  {
+    id: "booking-system",
+    name: "Booking System",
+    description: "End-to-end reservation system with calendar view, payment processing, and guest communication.",
+    status: "available"
+  },
+  {
+    id: "analytics",
+    name: "Analytics Dashboard",
+    description: "Data visualization and reporting tools to track performance metrics and identify business opportunities.",
+    status: "available"
+  },
+  {
+    id: "guest-experience",
+    name: "Guest Experience",
+    description: "Digital concierge, mobile check-in/out, and personalized guest communication platform.",
+    status: "coming-soon"
+  },
+  {
+    id: "staff-management",
+    name: "Staff Management",
+    description: "Schedule management, task assignment, and performance tracking for hospitality staff.",
+    status: "coming-soon"
+  },
+  {
+    id: "integration-api",
+    name: "Integration API",
+    description: "Connect with third-party services like POS systems, payment gateways, and distribution channels.",
+    status: "coming-soon"
+  }
+];
+---
+
+<MainLayout title="HosDev | Modern Hospitality Management">
+  <main>
+    <h2 class="home">
+      A comprehensive development platform for modern hospitality management. Build and scale your hospitality business with powerful, user-friendly tools designed for today's digital landscape.
+    </h2>
+    
+    <div class="seprtr">
+      <h3 class="features-h3">Platform Features</h3>
+      <div class="container">
+        {features.map(feature => {
+          return (
+            <div class="box">
+              <a href={`/features/${feature.id}`}>
+                <h4 class="feature-status ${feature.status}">{feature.name}</h4>
+                <p class="service-desc">{feature.description}</p>
+              </a>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+    
+    <div class="seprtr">
+      <h3 class="about-h3">Why HosDev?</h3>
+      <p>HosDev is built by hospitality professionals for hospitality professionals. We understand the unique challenges faced by hotels, resorts, and other accommodation providers in the digital age.</p>
+      <br>
+      <p>Our platform combines the best of modern technology with industry-specific knowledge to create tools that actually solve real problems in the hospitality sector.</p>
+      <br>
+      <div class="see-all">
+        <a href="/about" class="btn">Learn More</a>
+      </div>
+    </div>
+  </main>
+</MainLayout>
+
+<style>
+  /* Main styles */
+  main {
+    margin: calc(1.75 * var(--space-md)) 0;
+  }
+  
+  /* Grid layout for boxes */
+  .container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: var(--width);
+    margin: auto;
+  }
+  
+  /* Feature boxes */
+  .box {
+    cursor: pointer;
+    flex: 1 1 30%;
+    padding: 15px 20px;
+    border-radius: 10px;
+    text-align: left;
+    min-width: 180px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    border: 1px solid color-mix(in srgb, var(--text-color) 5%, transparent);
+  }
+  
+  .box:hover {
+    border: 1px solid color-mix(in srgb, var(--text-color) 0%, transparent);
+    background: color-mix(in srgb, var(--text-color) 5%, transparent);
+    box-shadow: 0 4px 8px color-mix(in srgb, var(--text-color) 8%, transparent);
+  }
+  
+  .box a:hover {
+    text-decoration: none;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .box {
+      flex: 1 1 100%;
+      height: auto;
+      min-height: 120px;
+    }
+    
+    .container {
+      gap: 15px;
+    }
+  }
+</style>

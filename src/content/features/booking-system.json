@@ -1,0 +1,8 @@
+{
+  "name": "Booking System",
+  "description": "End-to-end reservation system with calendar view, payment processing, and guest communication.",
+  "longDescription": "Our Booking System streamlines the entire reservation process from initial inquiry to final checkout. With an intuitive calendar interface and robust payment processing, you can manage bookings efficiently while providing a seamless experience for your guests.\n\nFeatures include:\n- Interactive availability calendar\n- Automated confirmation emails\n- Secure payment processing\n- Custom booking rules and restrictions\n- Group booking management\n- Cancellation and modification handling\n- Guest communication tools",
+  "status": "available",
+  "icon": "calendar",
+  "order": 2
+}
